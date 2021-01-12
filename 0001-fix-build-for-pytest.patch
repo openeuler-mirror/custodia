@@ -1,0 +1,29 @@
+From 2ecfbe1d82ef2bcb6bba3d9d8a71dcc8e7811021 Mon Sep 17 00:00:00 2001
+From: baizg1107 <preloyalwhite@163.com>
+Date: Tue, 12 Jan 2021 11:18:35 +0800
+Subject: [PATCH] fix build for pytest
+
+---
+ tests/conftest.py | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/tests/conftest.py b/tests/conftest.py
+index c25e302..6a977ec 100644
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -34,6 +34,11 @@ def pytest_addoption(parser):
+ 
+ def pytest_runtest_setup(item):
+     skip_servertest = item.config.getoption(SKIP_SERVERTEST)
+-    if skip_servertest and item.get_marker("servertest") is not None:
++    #pytest 4+
++    if hasattr(item, 'get_closest_marker'):
++        get_marker = item.get_closest_marker
++    else:
++        get_marker = item.get_marker
++    if skip_servertest and get_marker("servertest") is not None:
+         # args has --skip-servertests and test is marked as servertest
+         pytest.skip("Skip integration test")
+-- 
+2.23.0
+
