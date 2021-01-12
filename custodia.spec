@@ -1,6 +1,6 @@
 Name:           custodia
 Version:        0.6.0
-Release:        5
+Release:        6
 Summary:        A tool for managing secrets other processes
 License:        GPLv3+
 URL:            https://github.com/latchset/%{name}
@@ -10,6 +10,8 @@ Source3:        custodia@.service
 Source4:        custodia@.socket
 Source5:        custodia.tmpfiles.conf
 BuildArch:      noarch
+
+Patch0:		0001-fix-build-for-pytest.patch
 
 BuildRequires:      systemd python3-devel python3-jwcrypto >= 0.4.2
 BuildRequires:      python3-requests python3-setuptools > 18 python3-coverage
@@ -47,7 +49,7 @@ Custodia is modular, the configuration file controls how authentication,
 authorization, storage and API plugins are combined and exposed.
 
 %prep
-%autosetup -p1
+%autosetup -n %{name}-%{version} -p1
 
 %build
 %py3_build
@@ -128,5 +130,8 @@ exit 0
 %{python3_sitelib}/%{name}-%{version}-py%{python3_version}-nspkg.pth
 
 %changelog
+* Fri Jan 8 2021 baizhonggui <baizhonggui> 0.6.0-6
+- Fix building for pytest 
+
 * Fri May 15 2020 Captain Wei <captain.a.wei@gmail.com> 0.6.0-5
 - Package init
