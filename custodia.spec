@@ -1,6 +1,6 @@
 Name:           custodia
 Version:        0.6.0
-Release:        6
+Release:        7
 Summary:        A tool for managing secrets other processes
 License:        GPLv3+
 URL:            https://github.com/latchset/%{name}
@@ -15,7 +15,7 @@ Patch0:		0001-fix-build-for-pytest.patch
 
 BuildRequires:      systemd python3-devel python3-jwcrypto >= 0.4.2
 BuildRequires:      python3-requests python3-setuptools > 18 python3-coverage
-BuildRequires:      python3-pytest python3-docutils python3-systemd
+BuildRequires:      python3-pytest python3-docutils python3-systemd python3-virtualenv
 
 Requires:           python3-custodia = %{version}-%{release}
 Requires(preun):    systemd-units
@@ -59,9 +59,13 @@ export PIP_INDEX_URL=http://host.invalid./
 export PIP_NO_DEPS=yes
 export PIP_IGNORE_INSTALLED=yes
 
-%{__python3} -m venv --system-site-packages testenv
+
+virtualenv --python=%{__python3} --system-site-packages testenv
+source testenv/bin/activate
 testenv/bin/pip install .
 testenv/bin/python -m pytest --capture=no --strict --skip-servertests
+deactivate 
+
 
 %install
 install -d %{buildroot}/%{_sbindir}
@@ -130,6 +134,10 @@ exit 0
 %{python3_sitelib}/%{name}-%{version}-py%{python3_version}-nspkg.pth
 
 %changelog
+* Mon Feb 28 2022 Jingwiw <ixoote@gmail.com> 0.6.0-7
+- missing python-venv and replaced with python-virtualenv 
+  only riscv64 tested
+
 * Fri Jan 8 2021 baizhonggui <baizhonggui> 0.6.0-6
 - Fix building for pytest 
 
